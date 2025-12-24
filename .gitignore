@@ -142,3 +142,5 @@ vite.config.ts.timestamp-*
 /.idea/modules.xml
 /.idea/vcs.xml
 /.idea/.gitignore
+.DS_Store
+part_1/courseinfo/README.md
