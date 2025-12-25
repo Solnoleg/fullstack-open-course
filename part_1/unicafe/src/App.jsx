@@ -8,6 +8,40 @@ const Feedback = ({text, count}) => {
     )
 }
 
+const Average = ({good, neutral, bad}) => {
+    const score = {
+        good: 1,
+        neutral: 0,
+        bad: -1
+    }
+
+    const sum = good + neutral + bad
+    let average = 0
+    if (sum !== 0) {
+        average = (score.good * good + score.neutral * neutral + score.bad * bad) / sum
+    }
+
+    return (
+        <div>
+            average {average}
+        </div>
+    )
+}
+
+const Positive = ({good, neutral, bad}) => {
+    const sum = good + neutral + bad
+    let positive = 0
+    if (sum !== 0) {
+        positive = good / sum
+    }
+
+    return (
+        <div>
+            positive {positive}
+        </div>
+    )
+}
+
 const App = () => {
     const [good, setGood] = useState(0)
     const [neutral, setNeutral] = useState(0)
@@ -28,9 +62,14 @@ const App = () => {
                 }} text="bad"/>
             </div>
             <h2>statistics</h2>
-            <Feedback text="good" count={good} />
-            <Feedback text="neutral" count={neutral} />
-            <Feedback text="bad" count={bad} />
+            <Feedback text="good" count={good}/>
+            <Feedback text="neutral" count={neutral}/>
+            <Feedback text="bad" count={bad}/>
+            <div>
+                all {good + neutral + bad}
+            </div>
+            <Average good={good} neutral={neutral} bad={bad}/>
+            <Positive good={good} neutral={neutral} bad={bad}/>
         </div>
     )
 }
