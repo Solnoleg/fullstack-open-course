@@ -42,6 +42,22 @@ const Positive = ({good, neutral, bad}) => {
     )
 }
 
+const Statistics = ({good, neutral, bad}) => {
+    return (
+        <div>
+            <h2>statistics</h2>
+            <Feedback text="good" count={good}/>
+            <Feedback text="neutral" count={neutral}/>
+            <Feedback text="bad" count={bad}/>
+            <div>
+                all {good + neutral + bad}
+            </div>
+            <Average good={good} neutral={neutral} bad={bad}/>
+            <Positive good={good} neutral={neutral} bad={bad}/>
+        </div>
+    )
+}
+
 const App = () => {
     const [good, setGood] = useState(0)
     const [neutral, setNeutral] = useState(0)
@@ -61,15 +77,7 @@ const App = () => {
                     setBad(bad + 1)
                 }} text="bad"/>
             </div>
-            <h2>statistics</h2>
-            <Feedback text="good" count={good}/>
-            <Feedback text="neutral" count={neutral}/>
-            <Feedback text="bad" count={bad}/>
-            <div>
-                all {good + neutral + bad}
-            </div>
-            <Average good={good} neutral={neutral} bad={bad}/>
-            <Positive good={good} neutral={neutral} bad={bad}/>
+            <Statistics good={good} neutral={neutral} bad={bad}/>
         </div>
     )
 }
