@@ -12,18 +12,31 @@ const App = () => {
         'The only way to go fast, is to go well.'
     ]
 
-    const [selected, setSelected] = useState(0)
+    const votesInitial = anecdotes.reduce((accum, currentValue, index) => {
+            accum[index] = 0
+            return accum
+        }, {})
 
-    const getRandomAnecdote = () => {
-        const index = Math.floor(Math.random() * anecdotes.length);
-        return setSelected(index)
+    const [selected, setSelected] = useState(0)
+    const [votes, setVotes] = useState(votesInitial)
+
+    const updateSelected= () => setSelected(Math.floor(Math.random() * anecdotes.length))
+
+    const updateVotes = () => {
+        const copy = {...votes}
+        copy[selected] = copy[selected] + 1
+        setVotes(copy)
     }
 
     return (
         <div>
             {anecdotes[selected]}
             <div>
-                <button onClick={getRandomAnecdote}>next anecdote</button>
+                has votest {votes[selected]}
+            </div>
+            <div>
+                <button onClick={updateVotes}>vote</button>
+                <button onClick={updateSelected}>next anecdote</button>
             </div>
         </div>
     )
