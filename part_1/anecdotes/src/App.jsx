@@ -13,14 +13,14 @@ const App = () => {
     ]
 
     const votesInitial = anecdotes.reduce((accum, currentValue, index) => {
-            accum[index] = 0
-            return accum
-        }, {})
+        accum[index] = 0
+        return accum
+    }, {})
 
     const [selected, setSelected] = useState(0)
     const [votes, setVotes] = useState(votesInitial)
 
-    const updateSelected= () => setSelected(Math.floor(Math.random() * anecdotes.length))
+    const updateSelected = () => setSelected(Math.floor(Math.random() * anecdotes.length))
 
     const updateVotes = () => {
         const copy = {...votes}
@@ -28,15 +28,30 @@ const App = () => {
         setVotes(copy)
     }
 
+    const findMax = () => {
+        return Object.keys(votes).reduce((a, b) => votes[a] > votes[b] ? a : b);
+    }
+
     return (
         <div>
-            {anecdotes[selected]}
+            <h2>
+                Anecdote of the day
+            </h2>
+            <div>
+                {anecdotes[selected]}
+            </div>
             <div>
                 has votest {votes[selected]}
             </div>
             <div>
                 <button onClick={updateVotes}>vote</button>
                 <button onClick={updateSelected}>next anecdote</button>
+            </div>
+            <h2>
+                Anecdote with most votes
+            </h2>
+            <div>
+                {anecdotes[findMax()]}
             </div>
         </div>
     )
