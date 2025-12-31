@@ -144,3 +144,4 @@ vite.config.ts.timestamp-*
 /.idea/.gitignore
 .DS_Store
 part_1/courseinfo/README.md
+part_2/theory
