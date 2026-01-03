@@ -26,9 +26,13 @@ const App = () => {
             return
         }
 
-        setPersons(persons.concat({name: newName, number: newNumber}))
-        setNewName('')
-        setNewNumber('')
+        axios
+            .post('http://localhost:3001/persons', {name: newName, number: newNumber})
+            .then(response => {
+                setPersons(persons.concat(response.data))
+                setNewName('')
+                setNewNumber('')
+            })
     }
 
     const personsToShow = filterStr.trim().length > 0
