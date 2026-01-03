@@ -1,5 +1,4 @@
 import {useEffect, useState} from 'react'
-import axios from 'axios'
 import Filter from "./components/Filter.jsx";
 import PersonForm from "./components/PersonForm.jsx";
 import Persons from "./components/Persons.jsx";
@@ -40,6 +39,25 @@ const App = () => {
         ? persons.filter(p => p.name.toLowerCase().includes(filterStr.toLowerCase()))
         : persons
 
+    const getOnDelete = (person) => {
+        if (confirm(`Delete ${person.name}?`)) {
+            personService
+                .remove(person.id)
+                .then(deletedPerson =>
+                    setPersons(persons.filter(p => p.name !== deletedPerson.name))
+                )
+                .catch(error => {
+                        alert(
+                            `the person '${person.name}' was already deleted from server`
+                        )
+                        setPersons(persons.filter(p => p.name !== person.name))
+                    }
+                )
+        } else {
+            console.log('deletion cancelled')
+        }
+    }
+
     return (
         <div>
             <h2>Phonebook</h2>
@@ -53,7 +71,7 @@ const App = () => {
                 onNumberChange={(event) => setNewNumber(event.target.value)}
             />
             <h3>Numbers</h3>
-            <Persons persons={personsToShow}/>
+            <Persons persons={personsToShow} onDelete={getOnDelete}/>
         </div>
     )
 }
