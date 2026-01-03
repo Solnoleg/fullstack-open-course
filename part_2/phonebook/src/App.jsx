@@ -21,18 +21,30 @@ const App = () => {
     const addPerson = (event) => {
         event.preventDefault()
 
-        if (persons.map(name => name.name).includes(newName)) {
-            alert(`${newName} is already added to phonebook`)
-            return
-        }
-
-        personService
-            .create({name: newName, number: newNumber})
-            .then(createdPerson => {
-                setPersons(persons.concat(createdPerson))
+        if (persons.map(p => p.name.trim()).includes(newName.trim())) {
+            if (confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+                const personToReplace = persons.find(p => p.name === newName)
+                personService
+                    .update(personToReplace.id, {name: newName, number: newNumber})
+                    .then(updatedPerson => {
+                        setPersons(persons.map(p => p.id !== personToReplace.id ? p : updatedPerson))
+                        setNewName('')
+                        setNewNumber('')
+                    })
+            } else {
+                console.log('person not added')
                 setNewName('')
                 setNewNumber('')
-            })
+            }
+        } else {
+            personService
+                .create({name: newName, number: newNumber})
+                .then(createdPerson => {
+                    setPersons(persons.concat(createdPerson))
+                    setNewName('')
+                    setNewNumber('')
+                })
+        }
     }
 
     const personsToShow = filterStr.trim().length > 0
