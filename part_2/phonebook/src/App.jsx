@@ -11,7 +11,7 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [filterStr, setFilterStr] = useState('')
-    const [messageInfo, setMessageInfo] = useState('')
+    const [messageInfo, setMessageInfo] = useState(null)
 
     useEffect(() => {
         personService
@@ -31,9 +31,15 @@ const App = () => {
                     .update(personToReplace.id, {name: newName, number: newNumber})
                     .then(updatedPerson => {
                         setPersons(persons.map(p => p.id !== personToReplace.id ? p : updatedPerson))
-                        setMessageInfo(`Updated ${newName}`)
+                        setMessageInfo({message: `Updated ${newName}`, error: false})
                         setNewName('')
                         setNewNumber('')
+
+                        setTimeout(() => setMessageInfo(null), 3000)
+                    })
+                    .catch(err => {
+                        setMessageInfo({message: `Information of ${newName} has already been removed from server`, error: true})
+                        setPersons(persons.filter(p => p.name !== newName))
 
                         setTimeout(() => setMessageInfo(null), 3000)
                     })
@@ -47,7 +53,7 @@ const App = () => {
                 .create({name: newName, number: newNumber})
                 .then(createdPerson => {
                     setPersons(persons.concat(createdPerson))
-                    setMessageInfo(`Added ${newName}`)
+                    setMessageInfo({message: `Added ${newName}`, error: false})
                     setNewName('')
                     setNewNumber('')
 
