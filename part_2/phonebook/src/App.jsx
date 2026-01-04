@@ -2,13 +2,16 @@ import {useEffect, useState} from 'react'
 import Filter from "./components/Filter.jsx";
 import PersonForm from "./components/PersonForm.jsx";
 import Persons from "./components/Persons.jsx";
+import Notification from "./components/Notification.jsx";
 import personService from "./services/persons.js"
+import './index.css'
 
 const App = () => {
     const [persons, setPersons] = useState([])
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [filterStr, setFilterStr] = useState('')
+    const [messageInfo, setMessageInfo] = useState('')
 
     useEffect(() => {
         personService
@@ -28,8 +31,11 @@ const App = () => {
                     .update(personToReplace.id, {name: newName, number: newNumber})
                     .then(updatedPerson => {
                         setPersons(persons.map(p => p.id !== personToReplace.id ? p : updatedPerson))
+                        setMessageInfo(`Updated ${newName}`)
                         setNewName('')
                         setNewNumber('')
+
+                        setTimeout(() => setMessageInfo(null), 3000)
                     })
             } else {
                 console.log('person not added')
@@ -41,8 +47,11 @@ const App = () => {
                 .create({name: newName, number: newNumber})
                 .then(createdPerson => {
                     setPersons(persons.concat(createdPerson))
+                    setMessageInfo(`Added ${newName}`)
                     setNewName('')
                     setNewNumber('')
+
+                    setTimeout(() => setMessageInfo(null), 3000)
                 })
         }
     }
@@ -73,6 +82,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+            <Notification message={messageInfo} />
             <Filter onChange={(event) => setFilterStr(event.target.value)}/>
             <h3>add a new</h3>
             <PersonForm
