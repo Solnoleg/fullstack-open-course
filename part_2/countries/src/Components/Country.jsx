@@ -1,5 +1,5 @@
 const Country = ({country}) => {
-    if (country) {
+    if (country && country.show) {
         return (
             <div>
                 <h1>{country.name.common}</h1>
@@ -9,7 +9,7 @@ const Country = ({country}) => {
                 <ul>
                     {Object.values(country.languages).map(lang => <li key={lang}>{lang}</li>)}
                 </ul>
-                <img src={country.flags.png ?? country.flags.svg}/>
+                <img src={country.flags.png} alt={country.flags.svg} border="2"/>
             </div>
         )
     }

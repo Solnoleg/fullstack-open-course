@@ -18,23 +18,27 @@ function App() {
                     setCountries(null)
                     setCountry(null)
                 } else if (countries.length === 1) {
-                    countriesService.findOne(countries[0].name.common).then(country => {
-                            setCountry(country)
-                            setCountries(null)
-                            setNotification(null)
-                        }
-                    )
+                    setCountry({...countries[0], show: true})
+                    setCountries(null)
+                    setNotification(null)
                 } else {
-                    setCountries(countries)
+                    setCountries(countries.map(c => ({...c, show: false})))
                     setCountry(null)
                     setNotification(null)
                 }
             });
+        } else {
+            setNotification(null)
         }
     }, [newCountry])
 
     const onChange = (event) => {
         setNewCountry(event.target.value)
+    }
+
+    const onShowChange = (country) => {
+        const changedCountry = {...country, show: !country.show}
+        setCountries(countries.map(c => c.name.common === country.name.common ? changedCountry : c))
     }
 
     return (
@@ -43,7 +47,7 @@ function App() {
                 find countries <input onChange={onChange}/>
             </div>
             <Notification value={notification}/>
-            <Countries list={countries}/>
+            <Countries list={countries} onShowChange={onShowChange}/>
             <Country country={country}/>
         </>
     )

@@ -1,8 +1,21 @@
-const Countries = ({list}) => {
-    if (list && list.length !==0) {
+import Country from "./Country.jsx";
+
+const Countries = ({list, onShowChange}) => {
+    if (list && list.length !== 0) {
         return (
             <div>
-                {list.map(country => <div key={country.name.common}>{country.name.common}</div>)}
+                {
+                    list.map(
+                        country =>
+                            <div key={country.name.common}>
+                                {country.name.common}
+                                <button onClick={() => onShowChange(country)}>
+                                    show
+                                </button>
+                                <Country country={country}/>
+                            </div>
+                    )
+                }
             </div>
         )
     }
