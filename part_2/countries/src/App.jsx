@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 import Countries from './components/Countries'
-import Country from './components/Country'
+import CountryInfo from './components/CountryInfo.jsx'
 import Notification from './components/Notification'
 import countriesService from './services/countries'
 
@@ -48,7 +48,7 @@ function App() {
             </div>
             <Notification value={notification}/>
             <Countries list={countries} onShowChange={onShowChange}/>
-            <Country country={country}/>
+            <CountryInfo country={country}/>
         </>
     )
 }

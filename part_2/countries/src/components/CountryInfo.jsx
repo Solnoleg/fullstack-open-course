@@ -1,4 +1,6 @@
-const Country = ({country}) => {
+import Weather from './Weather';
+
+const CountryInfo = ({country}) => {
     if (country && country.show) {
         return (
             <div>
@@ -10,9 +12,10 @@ const Country = ({country}) => {
                     {Object.values(country.languages).map(lang => <li key={lang}>{lang}</li>)}
                 </ul>
                 <img src={country.flags.png} alt={country.flags.svg} border="2"/>
+                <Weather capital={country.capital[0]} geo={country.capitalInfo.latlng}/>
             </div>
         )
     }
 }
 
-export default Country
+export default CountryInfo

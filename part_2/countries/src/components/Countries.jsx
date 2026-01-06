@@ -1,4 +1,4 @@
-import Country from "./Country.jsx";
+import CountryInfo from "./CountryInfo.jsx";
 
 const Countries = ({list, onShowChange}) => {
     if (list && list.length !== 0) {
@@ -12,7 +12,7 @@ const Countries = ({list, onShowChange}) => {
                                 <button onClick={() => onShowChange(country)}>
                                     show
                                 </button>
-                                <Country country={country}/>
+                                <CountryInfo country={country}/>
                             </div>
                     )
                 }
