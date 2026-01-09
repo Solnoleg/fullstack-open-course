@@ -59,3 +59,17 @@ app.delete('/api/persons/:id', (req, res) => {
     persons = persons.filter(person => person.id !== id)
     res.status(204).end()
 })
+
+app.post('/api/persons', (req, res) => {
+    if (!req.body.name || !req.body.number) {
+        return res.status(400).json({error: 'content missing'})
+    }
+    const person = {
+        id: Math.floor(Math.random() * 1000000 +1),
+        name: req.body.name,
+        number: req.body.number
+    }
+
+    persons = persons.concat(person)
+    res.json(person)
+})
