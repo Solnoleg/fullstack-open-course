@@ -64,11 +64,17 @@ app.post('/api/persons', (req, res) => {
     if (!req.body.name || !req.body.number) {
         return res.status(400).json({error: 'content missing'})
     }
+
+    const duplicate = persons.find(p => p.name === req.body.name);
+    if (duplicate) {
+        return res.status(400).json({error: 'name must be unique'})
+    }
+
     const person = {
-        id: Math.floor(Math.random() * 1000000 +1),
+        id: String(Math.floor(Math.random() * 1000000 +1)),
         name: req.body.name,
         number: req.body.number
-    }
+    };
 
     persons = persons.concat(person)
     res.json(person)
