@@ -1,69 +1,60 @@
+require('dotenv').config()
 const express = require('express')
-const morgan = require('morgan')
 const app = express()
+const morgan = require('morgan')
+const Person = require('./models/person')
 
 app.use(express.static('dist'))
 app.use(express.json())
 
-morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
+morgan.token('body', function (req, res) {
+    return JSON.stringify(req.body)
+})
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-const PORT =  process.env.PORT || 3001;
+const PORT = process.env.PORT || 3001;
 const server = app.listen(PORT, () => console.log('Server running on port', PORT));
 
-let persons = [
-    {
-        "id": "1",
-        "name": "Arto Hellas",
-        "number": "040-123456"
-    },
-    {
-        "id": "2",
-        "name": "Ada Lovelace",
-        "number": "39-44-5323523"
-    },
-    {
-        "id": "3",
-        "name": "Dan Abramov",
-        "number": "12-43-234345"
-    },
-    {
-        "id": "4",
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122"
-    }
-]
-
 app.get('/info', (req, res) => {
-        const peoplesSize = persons.length
-        res.send(
-            `
-                    <h2>Phonebook has into for ${peoplesSize}</h2>
+        let peoplesSize = 0
+        Person
+            .find({})
+            .then(persons =>
+                res.send(
+                    `
+                    <h2>Phonebook has into for ${persons.length}</h2>
                     <div>${new Date()}</div>
                   `
-        )
+                )
+            )
     }
 )
 
 app.get('/api/persons', (req, res) => {
-    res.json(persons)
+    Person
+        .find({})
+        .then(persons => res.json(persons))
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    const person = persons.find(person => person.id === req.params.id)
-
-    if (!person) {
-        res.status(404).end()
-    } else {
-        res.json(person)
-    }
+    Person
+        .findById(req.params.id)
+        .then(person => {
+            if (!person) {
+                return res.status(404).json({error: 'person not found'})
+            } else {
+                return res.json(person)
+            }
+        })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-    const id = req.params.id
-    persons = persons.filter(person => person.id !== id)
-    res.status(204).end()
+    Person
+        .deleteOne({_id: req.params.id})
+        .then(result => res.json(
+            {'deleted': result.deletedCount > 0}
+        ))
 })
 
 app.post('/api/persons', (req, res) => {
@@ -71,17 +62,18 @@ app.post('/api/persons', (req, res) => {
         return res.status(400).json({error: 'content missing'})
     }
 
-    const duplicate = persons.find(p => p.name === req.body.name);
-    if (duplicate) {
-        return res.status(400).json({error: 'name must be unique'})
-    }
+    Person
+        .findOne({name: req.body.name})
+        .then(duplicate => {
+            if (duplicate) {
+                return res.status(400).json({error: 'name must be unique'})
+            }
 
-    const person = {
-        id: String(Math.floor(Math.random() * 1000000 +1)),
-        name: req.body.name,
-        number: req.body.number
-    };
+            const person = new Person({
+                name: req.body.name,
+                number: req.body.number
+            });
 
-    persons = persons.concat(person)
-    res.json(person)
+            person.save().then(savedPerson => res.json(savedPerson))
+        })
 })
