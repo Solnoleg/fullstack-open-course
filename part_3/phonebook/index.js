@@ -50,11 +50,11 @@ app.get('/api/persons/:id', (req, res) => {
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-    Person
-        .deleteOne({_id: req.params.id})
-        .then(result => res.json(
-            {'deleted': result.deletedCount > 0}
-        ))
+    Person.findByIdAndDelete(req.params.id)
+        .then(result => {
+            res.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
 app.post('/api/persons', (req, res) => {
