@@ -31,13 +31,14 @@ app.get('/info', (req, res) => {
     }
 )
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (req, res, next) => {
     Person
         .find({})
         .then(persons => res.json(persons))
+        .catch(error => next(error))
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     Person
         .findById(req.params.id)
         .then(person => {
@@ -47,9 +48,10 @@ app.get('/api/persons/:id', (req, res) => {
                 return res.json(person)
             }
         })
+        .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndDelete(req.params.id)
         .then(result => {
             res.status(204).end()
@@ -57,7 +59,7 @@ app.delete('/api/persons/:id', (req, res) => {
         .catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     if (!req.body.name || !req.body.number) {
         return res.status(400).json({error: 'content missing'})
     }
@@ -76,4 +78,17 @@ app.post('/api/persons', (req, res) => {
 
             person.save().then(savedPerson => res.json(savedPerson))
         })
+        .catch(error => next(error))
 })
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError') {
+        return response.status(400).send({error: 'malformatted id'})
+    }
+
+    next(error)
+}
+
+app.use(errorHandler)
