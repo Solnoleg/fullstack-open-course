@@ -16,7 +16,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 const PORT = process.env.PORT || 3001;
 const server = app.listen(PORT, () => console.log('Server running on port', PORT));
 
-app.get('/info', (req, res) => {
+app.get('/info', (req, res, next) => {
         let peoplesSize = 0
         Person
             .find({})
@@ -28,6 +28,7 @@ app.get('/info', (req, res) => {
                   `
                 )
             )
+            .catch(error => next(error))
     }
 )
 
