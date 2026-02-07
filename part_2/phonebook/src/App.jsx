@@ -38,7 +38,10 @@ const App = () => {
                         setTimeout(() => setMessageInfo(null), 3000)
                     })
                     .catch(err => {
-                        setMessageInfo({message: `Information of ${newName} has already been removed from server`, error: true})
+                        setMessageInfo({
+                            message: `Information of ${newName} has already been removed from server`,
+                            error: true
+                        })
                         setPersons(persons.filter(p => p.name !== newName))
 
                         setTimeout(() => setMessageInfo(null), 3000)
@@ -59,6 +62,10 @@ const App = () => {
 
                     setTimeout(() => setMessageInfo(null), 3000)
                 })
+                .catch(error => {
+                    setMessageInfo({message: error.response.data.error, error: true})
+                    setTimeout(() => setMessageInfo(null), 3000)
+                })
         }
     }
 
@@ -70,8 +77,9 @@ const App = () => {
         if (confirm(`Delete ${person.name}?`)) {
             personService
                 .remove(person.id)
-                .then(deletedPerson =>
-                    setPersons(persons.filter(p => p.name !== deletedPerson.name))
+                .then(_ => {
+                        setPersons(persons.filter(p => p.name !== person.name))
+                    }
                 )
                 .catch(error => {
                         alert(
@@ -88,7 +96,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
-            <Notification message={messageInfo} />
+            <Notification message={messageInfo}/>
             <Filter onChange={(event) => setFilterStr(event.target.value)}/>
             <h3>add a new</h3>
             <PersonForm
