@@ -66,9 +66,11 @@ app.post('/api/persons', (req, res, next) => {
 
     Person
         .findOne({name: req.body.name})
-        .then(duplicate => {
-            if (duplicate) {
-                return res.status(400).json({error: 'name must be unique'})
+        .then(existingPerson => {
+            if (existingPerson) {
+                existingPerson.name = req.body.name
+                existingPerson.number = req.body.number
+                return existingPerson.save().then(updatedPerson => res.json(updatedPerson))
             }
 
             const person = new Person({
