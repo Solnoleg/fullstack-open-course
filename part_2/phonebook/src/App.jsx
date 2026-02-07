@@ -37,13 +37,18 @@ const App = () => {
 
                         setTimeout(() => setMessageInfo(null), 3000)
                     })
-                    .catch(err => {
-                        setMessageInfo({
-                            message: `Information of ${newName} has already been removed from server`,
-                            error: true
-                        })
-                        setPersons(persons.filter(p => p.name !== newName))
+                    .catch(error => {
+                        if (error.status === 404) {
+                            setMessageInfo({
+                                message: `Information of ${newName} has already been removed from server`,
+                                error: true
+                            });
+                            setPersons(persons.filter(p => p.name !== newName))
+                            setTimeout(() => setMessageInfo(null), 3000)
+                            return
+                        }
 
+                        setMessageInfo({message: error.response.data.error, error: true})
                         setTimeout(() => setMessageInfo(null), 3000)
                     })
             } else {
